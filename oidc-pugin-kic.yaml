@@ -1,0 +1,13 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: oidc-auth
+config:
+  issuer: https://dev-63479287.okta.com/oauth2/default
+  client_id:
+  - 0oa8zk6ynconKRg855d7
+  client_secret:
+  - KSC2BHJEMElg3w1_fXZshXOYRwaY-quxzsK3buff
+  redirect_uri:
+  - http://localhost:9080
+plugin: openid-connect

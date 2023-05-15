@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: bookinfo
+  namespace: bookinfo
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: bookinfo.dms.int-prod.usw2.ficoanalyticcloud.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: productpage
+            port:
+              number: 9080
+  tls:
+  - hosts:
+    - bookinfo.dms.int-prod.usw2.ficoanalyticcloud.com
+status: 
+   loadBalancer: 
+     ingress: 
+       - hostname: k8s-ingressn-ingressn-a70168fe58-fcdef8bedc8110f7.elb.us-west-2.amazonaws.com

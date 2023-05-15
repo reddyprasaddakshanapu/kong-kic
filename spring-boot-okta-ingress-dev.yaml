@@ -1,0 +1,26 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: spring-boot-okta
+  namespace: spring-boot-okta
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  rules:
+  - host: springbootokta.dms.dev.usw2.ficoanalyticcloud.com
+    http:
+      paths:
+      - path: /
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: spring-boot-okta
+            port:
+              number: 8080
+  tls:
+  - hosts:
+    - springbootokta.dms.dev.usw2.ficoanalyticcloud.com
+status: 
+   loadBalancer: 
+     ingress: 
+       - hostname: k8s-ingressn-ingressn-d9a9e6287b-769de12d8693971b.elb.us-west-2.amazonaws.com

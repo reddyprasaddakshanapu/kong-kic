@@ -1,0 +1,9 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongConsumer
+metadata:
+  name: kong-jwt-consumer
+  annotations:
+    kubernetes.io/ingress.class: kong
+username: repo-admin
+credentials:
+  - kong-jwt-secret

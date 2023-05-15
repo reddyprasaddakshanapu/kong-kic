@@ -1,0 +1,49 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: opa-example
+  annotations:
+    kubernetes.io/ingress.class: kong
+  labels:
+    global: "true"
+config: 
+  opa_host: opa.opa
+  opa_port: 8181
+  opa_path: /v1/data/rbac/allow
+  "opa_protocol": "http"
+  "ssl_verify": true
+  "include_parsed_json_body_in_opa_input": true
+  "include_body_in_opa_input": true
+  "include_consumer_in_opa_input": true
+  "include_route_in_opa_input": true
+plugin: opa
+
+# apiVersion: configuration.konghq.com/v1
+# kind: KongPlugin
+# metadata:
+#   name: opa-example
+#   namespace: spring-boot-okta
+# config: 
+#   opa_host: opa.opa
+#   opa_port: 8181
+#   opa_path: /v1/data/example/allow
+# plugin: opa
+
+
+---
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: spring-boot-okta
+#   labels:
+#     app: spring-boot-okta
+#   annotations:
+#     konghq.com/plugins: opa-example
+# spec:
+#   ports:
+#   - port: 8080
+#     targetPort: 8080
+#     protocol: TCP
+#     name: spring-boot-okta
+#   selector:
+#     app: spring-boot-okta

@@ -1,0 +1,134 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: opa
+  labels:
+    kuma.io/sidecar-injection: enabled
+    sidecar.istio.io/inject: "true"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: example-policy
+  namespace: opa
+data:
+  example.rego: |
+   package example
+  
+    default allow = false
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/opa"
+      input.request.http.headers["my-secret-header"] = "opa-policy"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/int-prod/opa"
+      input.request.http.headers["my-secret-header"] = "opa-policy"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/int-prod/all"
+      input.request.http.headers["my-secret-header"] = "allow-all"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/all"
+      input.request.http.headers["my-secret-header"] = "allow-all"
+    }
+     allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/api/v1/"
+      input.request.http.headers["my-secret-header"] = "allow-all"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/api/v1/customers"
+      input.request.http.headers["my-secret-header"] = "customers"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/api/v1/posts"
+      input.request.http.headers["my-secret-header"] = "posts"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/api/v1/users"
+      input.request.http.headers["my-secret-header"] = "users"
+    }
+    allow {
+      input.request.http.method = "POST"
+      input.request.http.path = "/api/v1/users"
+      input.request.http.headers["my-secret-header"] = "users"
+    }
+    allow {
+      input.request.http.method = "POST"
+      input.request.http.path = "/api/v1/posts"
+      input.request.http.headers["my-secret-header"] = "posts"
+    }
+    allow {
+      input.request.http.method = "GET"
+      input.request.http.path = "/"
+      input.request.http.headers["my-secret-header"] = "open-sesame"
+    }
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: opa
+  namespace: opa
+  labels:
+    app: opa
+spec:
+  type: ClusterIP
+  selector:
+    app: opa
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8181
+      targetPort: 8181
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opa
+  namespace: opa  
+  labels:
+    app: opa
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opa
+  template:
+    metadata:
+      labels:
+        app: opa
+        sidecar.istio.io/inject: "true"
+      name: opa
+    spec:
+      imagePullSecrets:
+      - name: spring-boot-okta
+      containers:
+      - name: opa
+        image: openpolicyagent/opa:0.50.2
+        ports:
+        - name: http
+          containerPort: 8181
+        args:
+        - "run"
+        - "--ignore=.*"  # exclude hidden dirs created by Kubernetes
+        - "--server"
+        - "--log-level=debug"
+        - "/policies"
+        - "--set"
+        - "decision_logs.console=true"
+        volumeMounts:
+        - readOnly: true
+          mountPath: /policies
+          name: example-policy
+      volumes:
+      - name: example-policy
+        configMap:
+          name: example-policy

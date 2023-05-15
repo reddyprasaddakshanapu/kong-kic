@@ -1,0 +1,16 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: oidc-auth
+  namespace: spring-boot-okta
+config:
+  issuer: http://localhost:9009/realms/oidcapplication
+  client_id:
+  - oidcapplication
+  client_secret:
+  - XoULx6qXj9d9F57oMnDxjSifT5fwjMo6
+  scopes: 
+  - openid
+  redirect_uri:
+  - http://localhost:8080/login/oauth2/code/oidcapplication
+plugin: openid-connect

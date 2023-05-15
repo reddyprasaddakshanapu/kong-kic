@@ -1,0 +1,26 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: oidc-auth
+  annotations:
+    kubernetes.io/ingress.class: kong
+config:
+  auth_methods:
+  #- authorization_code
+  #- session
+  - bearer
+  issuer: https://iam.dms.dev.usw2.ficoanalyticcloud.com/realms/FicoPlatformRealm
+  # client_id:
+  # - login-client
+  # client_secret:
+  # - MepFVJZkCAbAp0KtcnWufntStpXEJQc4
+  preserve_query_args: true
+  ssl_verify: false
+  display_errors: true
+  verify_nonce: false
+  verify_claims: false
+  verify_signature: false
+  introspection_check_active: false
+  #authorization_endpoint: https://iam.dms.dev.usw2.ficoanalyticcloud.com/realms/FicoPlatformRealm/protocol/openid-connect/auth
+  #token_endpoint: https://iam.dms.dev.usw2.ficoanalyticcloud.com/realms/FicoPlatformRealm/protocol/openid-connect/token
+plugin: openid-connect

@@ -1,0 +1,45 @@
+apiVersion: v1 
+kind: Service
+metadata:
+  name: spring-boot-okta
+  namespace: spring-boot-okta
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+      protocol: TCP
+      targetPort: 8080
+      name: spring-boot-okta
+  selector: 
+    app: spring-boot-okta
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-okta
+  namespace: spring-boot-okta
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: spring-boot-okta
+  template:
+    metadata:
+      name: spring-boot-okta
+      namespace: spring-boot-okta
+      labels:
+        app: spring-boot-okta
+        sidecar.istio.io/inject: "true"
+    spec:
+      imagePullSecrets:
+      - name: spring-boot-okta
+      containers:
+        - image: dmp-docker-development.pub-repo.prod.us-west-2.aws.fico.com/fico/spring-boot-okta:0.0.1
+          imagePullPolicy: Always
+          name: spring-boot-okta
+          resources:
+            requests:
+              memory: 600Mi
+          ports:
+            - containerPort: 8080
+              name: spring-boot

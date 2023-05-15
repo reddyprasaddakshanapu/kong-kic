@@ -1,0 +1,33 @@
+apiVersion: configuration.konghq.com/v1
+kind: KongPlugin
+metadata:
+  name: oidc-auth
+  namespace: spring-boot-okta
+config: 
+  auth_methods:
+  - authorization_code
+  - session
+  - bearer
+  #issuer: http://10.193.184.197:9009/realms/oidcapplication
+  issuer: http://192.168.0.102:9009/realms/oidcapplication
+  client_id:
+  - oidcapplication
+  client_secret:
+  - XoULx6qXj9d9F57oMnDxjSifT5fwjMo6
+  #response_mode: form_post
+  preserve_query_args: true
+  #login_action: redirect
+  #login_tokens: null
+  ssl_verify: false
+  display_errors: true
+  verify_nonce: false
+  verify_claims: false
+  verify_signature: false
+  introspection_check_active: false
+  #authorization_endpoint: http://10.193.184.197:9009/realms/oidcapplication/protocol/openid-connect/auth
+  #token_endpoint: http://10.193.184.197:9009/realms/oidcapplication/protocol/openid-connect/token
+  authorization_endpoint: http://192.168.0.102:9009/realms/oidcapplication/protocol/openid-connect/auth
+  token_endpoint: http://192.168.0.102:9009/realms/oidcapplication/protocol/openid-connect/token
+  redirect_uri:
+  - http://kong-spring.127-0-0-1.nip.io:8080/
+plugin: openid-connect
