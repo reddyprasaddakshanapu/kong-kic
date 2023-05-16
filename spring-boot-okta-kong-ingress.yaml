@@ -4,7 +4,7 @@ metadata:
   name: spring-boot-okta-kong
   namespace: spring-boot-okta
   annotations:
-    konghq.com/plugins: oidc-auth, opa-post-function, mtls-auth
+    konghq.com/plugins: oidc-auth, opa-post-function, mtls-auth,rate-limit
 spec:
   ingressClassName: kong
   rules:
